@@ -16,6 +16,7 @@ describe("My API Tests", function () {
 
   //Before running tests, login user and get JWT for testing.
   before(function (done) {
+    this.enableTimeouts(false);
     app
       .post("/api/login")
       .send(userCredentials)
