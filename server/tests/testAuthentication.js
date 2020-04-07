@@ -38,13 +38,6 @@ describe("My API Tests", function () {
       done();
     };
 
-  it("should return a 200 response if the user can log in", function (done) {
-    app.get("http://localhost:8000/api/login", function (err, response, body) {
-      response.statusCode.should.equal(200);
-      body.should.include("Token");
-    });
-    done();
-  });
   it("should return a 401 response if the credentials are invalid", function (done) {
     app.get("http://localhost:8000/api/login", function (err, response, body) {
       response.statusCode.should.equal(401);
