@@ -7,7 +7,7 @@ var server = require("../index");
 var token = null;
 let chai = require("chai");
 let chaiHttp = require("chai-http");
-let should = chai.should();
+global.Should = require("chai").Should();
 chai.use(chaiHttp);
 var token = null;
 
