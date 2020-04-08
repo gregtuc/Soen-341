@@ -19,6 +19,7 @@ describe("Api Tests", () => {
       .send(userCredentials)
       .end((err, res) => {
         res.should.have.status(200);
+        should.exist(res.data);
         token = res.data.token;
       });
   });
@@ -29,6 +30,7 @@ describe("Api Tests", () => {
         .get("http://localhost:8000/api/currentuser")
         .end((err, res) => {
           res.should.have.status(200);
+          should.exist(res.body);
           res.body.should.be.a("array");
           done();
         });
@@ -42,6 +44,7 @@ describe("Api Tests", () => {
         .send(book)
         .end((err, res) => {
           res.should.have.status(200);
+          should.exist(res.body);
           res.body.should.be.a("array");
           res.body.should.be.a("object");
           done();
@@ -57,6 +60,7 @@ describe("Api Tests", () => {
         .send(newfollow)
         .end((err, res) => {
           res.should.have.status(200);
+          should.exist(res.body);
           res.body.should.be.a("object");
           done();
         });
