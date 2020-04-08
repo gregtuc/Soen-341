@@ -1,68 +1,65 @@
-var expect = require("chai").expect;
-var request = require("supertest");
-var mongoose = require("mongoose");
-
 //Data being sent to login route.
 const userCredentials = {
   email: "Greg.tucker1@hotmail.ca",
   password: "cookie123",
 };
+var server = require("../index");
+var token = null;
+let chai = require("chai");
+let chaiHttp = require("chai-http");
+let should = chai.should();
+chai.use(chaiHttp);
+var token = null;
 
-describe("GET /api/currentuser", function () {
-  //POST the userCredentials to /api/login, and expect a response of status 200.
-  var server = require("../index");
-  var authenticatedUser = request.agent(server);
-  var token = null;
-  this.beforeAll(function (done) {
-    authenticatedUser
-      .post("/api/login")
+describe("Api Tests", () => {
+  beforeEach((done) => {
+    chai
+      .request(server)
+      .post("http://localhost:8000/api/login")
       .send(userCredentials)
-      .end(function (err, response) {
-        expect(response.statusCode).to.equal(200);
-        token = response.data.token;
-        done();
+      .end((err, res) => {
+        res.should.have.status(200);
+        token = res.data.token;
       });
   });
-  //Status code 200 should have been sent.
-
-  it("should return a 200 response if the user can log in", function (done) {
-    authenticatedUser.get(
-      "http://localhost:8000/api/login",
-      {
-        headers: { token: sessionStorage.getItem("jwt") },
-      },
-      function (err, response, body) {
-        response.statusCode.should.equal(200);
-        body.should.include("Token");
-      }
-    );
-    done();
-  });
-  it("should return a 401 response if the credentials are invalid", function (done) {
-    authenticatedUser.get("http://localhost:8000/api/login", function (
-      err,
-      response,
-      body
-    ) {
-      response.statusCode.should.equal(401);
+  describe("/currentUser", () => {
+    it("it should GET user information", (done) => {
+      chai
+        .request(server)
+        .get("http://localhost:8000/api/currentuser")
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a("array");
+          done();
+        });
     });
-    done();
   });
-  it("should return a list of followers", function (done) {
-    authenticatedUser.get("http://localhost:8000/api/follow", function (
-      err,
-      response,
-      body
-    ) {
-      expect(responde.data.following).to.be.an("array");
-      response.statusCode.should.equal(200);
+  describe("/following", () => {
+    it("it should GET users that you follow", (done) => {
+      chai
+        .request(server)
+        .post("http://localhost:8000/api/follow")
+        .send(book)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a("array");
+          res.body.should.be.a("object");
+          done();
+        });
     });
-    done();
-  });
-  after(function (done) {
-    server.close(function () {
-      mongoose.connection.close(done);
+    it("it should POST a new follow", (done) => {
+      const newfollow = {
+        username: "greg34910",
+      };
+      chai
+        .request(server)
+        .post("http://localhost:8000/api/follow/new")
+        .send(newfollow)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a("object");
+          done();
+        });
     });
-    process.exit(0);
   });
 });

@@ -48,13 +48,14 @@ router.post("/new", auth, async (req, res) => {
     await User.findOneAndUpdate(
       { username: followUsername },
       {
-        $addToSet: { followers: req.user.username }
+        $addToSet: { followers: req.user.username },
       },
       { new: true, upsert: true },
       (err, doc) => {
         if (err) {
           return res.status(400).json(err);
         }
+        res.status(200).json(doc);
       }
     );
 
@@ -63,7 +64,7 @@ router.post("/new", auth, async (req, res) => {
     await User.findByIdAndUpdate(
       userId,
       {
-        $addToSet: { following: followUsername }
+        $addToSet: { following: followUsername },
       },
       { new: true, upsert: true },
       (err, doc) => {
@@ -97,7 +98,7 @@ router.patch("/remove", auth, async (req, res) => {
     let userToUnfollow = await User.findOneAndUpdate(
       { username: unfollowUsername },
       {
-        $pull: { followers: req.user.username }
+        $pull: { followers: req.user.username },
       },
       { new: true, upsert: true },
       (err, doc) => {
@@ -108,7 +109,7 @@ router.patch("/remove", auth, async (req, res) => {
     );
     if (!userToUnfollow) {
       return res.status(400).json({
-        message: "User does not exist in database"
+        message: "User does not exist in database",
       });
     }
 
@@ -117,7 +118,7 @@ router.patch("/remove", auth, async (req, res) => {
     await User.findByIdAndUpdate(
       userId,
       {
-        $pull: { following: unfollowUsername }
+        $pull: { following: unfollowUsername },
       },
       { new: true, upsert: true },
       (err, doc) => {
