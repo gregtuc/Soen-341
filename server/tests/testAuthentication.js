@@ -13,7 +13,7 @@ describe("GET /api/currentuser", function () {
   var server = require("../index");
   var authenticatedUser = request.agent(server);
   var token = null;
-  beforeAll(function (done) {
+  this.beforeAll(function (done) {
     authenticatedUser
       .post("/api/login")
       .send(userCredentials)
